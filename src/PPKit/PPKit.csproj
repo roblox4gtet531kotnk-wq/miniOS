@@ -1,0 +1,105 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Сборка ссылается на DLL из ЛОКАЛЬНО установленной игры, а не на NuGet-пакеты.
+    Так мод не зависит от версии Unity/People Playground и не тянет чужой код.
+
+    Задайте один из вариантов:
+      PP_GAME_DIR — корень игры (внутри People Playground_Data/Managed + BepInEx/core)
+      PP_REF_DIR  — папка, где лежат UnityEngine*.dll, BepInEx.dll, 0Harmony.dll, Assembly-CSharp.dll
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>PPKit</AssemblyName>
+    <RootNamespace>PPKit</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <DebugType>none</DebugType>
+    <Version>1.0.0</Version>
+    <Company>PPKit</Company>
+    <Product>PPKit</Product>
+    <Copyright>MIT</Copyright>
+    <NoWarn>$(NoWarn);CS0436</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(PP_GAME_DIR)' != ''">
+    <ManagedDir>$(PP_GAME_DIR)/People Playground_Data/Managed</ManagedDir>
+    <CoreDir>$(PP_GAME_DIR)/BepInEx/core</CoreDir>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(ManagedDir)' == '' and '$(PP_REF_DIR)' != ''">
+    <ManagedDir>$(PP_REF_DIR)</ManagedDir>
+    <CoreDir>$(PP_REF_DIR)</CoreDir>
+  </PropertyGroup>
+
+  <Target Name="CheckRefs" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="'$(ManagedDir)' == ''"
+           Text="Не задан PP_GAME_DIR или PP_REF_DIR. Пример: PP_GAME_DIR=&quot;C:\Program Files (x86)\Steam\steamapps\common\People Playground&quot; dotnet build -c Release" />
+    <Error Condition="!Exists('$(ManagedDir)/UnityEngine.dll')"
+           Text="Не найден $(ManagedDir)/UnityEngine.dll — проверьте путь к установленной игре." />
+  </Target>
+
+  <ItemGroup>
+    <!-- Unity -->
+    <Reference Include="UnityEngine">
+      <HintPath>$(ManagedDir)/UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(ManagedDir)/UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>$(ManagedDir)/UnityEngine.PhysicsModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule">
+      <HintPath>$(ManagedDir)/UnityEngine.ParticleSystemModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>$(ManagedDir)/UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>$(ManagedDir)/UnityEngine.UIModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>$(ManagedDir)/UnityEngine.UI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>$(ManagedDir)/UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule" Condition="Exists('$(ManagedDir)/UnityEngine.ImageConversionModule.dll')">
+      <HintPath>$(ManagedDir)/UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <!-- TextMeshPro есть не во всех версиях сборки — необязательная ссылка -->
+    <Reference Include="Unity.TextMeshPro" Condition="Exists('$(ManagedDir)/Unity.TextMeshPro.dll')">
+      <HintPath>$(ManagedDir)/Unity.TextMeshPro.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <!-- BepInEx 5 -->
+    <Reference Include="BepInEx">
+      <HintPath>$(CoreDir)/BepInEx.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(CoreDir)/0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Loc/ru.json" LogicalName="PPKit.Loc.ru.json" />
+  </ItemGroup>
+
+</Project>

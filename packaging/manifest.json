@@ -1,0 +1,9 @@
+{
+  "name": "PPKit_RU",
+  "version_number": "1.0.0",
+  "website_url": "https://example.invalid/ppkit",
+  "description": "Оптимизация (пресеты графики, лимит частиц, физика) и русский интерфейс для People Playground. Только для своей легальной копии игры.",
+  "dependencies": [
+    "BepInEx-BepInExPack_PeoplePlayground-5.4.2100"
+  ]
+}

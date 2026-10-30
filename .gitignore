@@ -1,0 +1,20 @@
+# --- сборка ---
+bin/
+obj/
+dist/
+*.user
+*.suo
+.vs/
+.idea/
+.vscode/
+
+# --- локальные ссылки на файлы игры (НЕ коммитим!) ---
+refs/
+*.dll
+*.pdb
+!packaging/**/*.dll
+
+# --- локальные артефакты мода ---
+strings_dump.txt
+missing_strings.txt
+BepInEx/
